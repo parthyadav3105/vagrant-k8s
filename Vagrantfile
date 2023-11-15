@@ -13,21 +13,15 @@ Vagrant.configure("2") do |config|
   config.vm.box = cfg['vm_box']
   config.vm.provider "virtualbox"
   config.vm.synced_folder ".", "/vagrant"
-  config.vm.box_check_update = false
-  config.ssh.insert_key = false
 
   config.vm.define "node1"
   config.vm.hostname = "node1"
-  config.vm.network :private_network, ip: cfg['vm_ip_addr']
-  config.vm.network "forwarded_port", guest: 6443, host: 6443
+  config.vm.network "private_network", ip: cfg['vm_ip_addr']
 
-  config.vm.provider :virtualbox do |vb|
+  config.vm.provider "virtualbox" do |vb|
     vb.cpus = cfg['vm_cpus']
     vb.memory = cfg['vm_memory']
-    vb.name = "kubespray-single-node_node1"
     vb.gui = false
-    vb.linked_clone = true
-    vb.check_guest_additions = false
   end
 
   config.vm.provision "init", type: "shell", privileged: true, run: "once", inline: <<-SHELL
@@ -50,7 +44,8 @@ Vagrant.configure("2") do |config|
     ansible.inventory_path     = "inventory/local/hosts.ini"
     ansible.limit              = "node1"
     ansible.playbook           = "cluster.yml"
-    ansible.extra_vars         = {"ip": cfg['vm_ip_addr']}.merge(YAML.load(File.read("config.yml")))['ansible']['extra_vars']
+
+    ansible.extra_vars         = {"ip": cfg['vm_ip_addr']}.merge(YAML.load(File.read("config.yml"))['ansible']['extra_vars'])
     # ansible.tags               = ['ingress-controller']
     ansible.become             = true
     ansible.become_user        = "root"

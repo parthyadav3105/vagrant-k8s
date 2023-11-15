@@ -2,36 +2,37 @@
 vagrant:
   vm_cpus: 4
   vm_memory: 8192
-  vm_ip_addr: '192.168.56.100'
+  vm_ip_addr: '192.168.56.200'
   vm_username: vagrant
   vm_box: ubuntu/jammy64
-  kubespray_version: '2.22.1'
+  kubespray_version: '2.23.1'
   kubespray_dir: /opt/kubespray
 
 ansible:
   extra_vars:
-    kube_version: v1.26.5
+    kube_version: v1.27.7
     cluster_name: cluster.local
     container_manager: containerd
     etcd_deployment_type: kubeadm
 
     kube_proxy_mode: iptables
-    kube_network_plugin: flannel
-    flannel_interface: eth1
-    flannel_backend_type: host-gw
+    kube_network_plugin: cni
+    # kube_network_plugin: flannel
+    # flannel_interface: eth1
+    # flannel_backend_type: host-gw
 
-    kube_service_addresses: 10.43. 0.0/16
-    kube_pods_subnet: 10.244.0.0/16
+    kube_service_addresses: 10.233.0.0/18
+    kube_pods_subnet: 10.233.64.0/18
 
     enable_nodelocaldns: false
-    helm_enabled: false
+    helm_enabled: true
     krew_enabled: false
     metrics_server_enabled: false
 
     local_path_provisioner_enabled: true
     local_path_provisioner_namespace: platform
 
-    ingress_nginx_enabled: false
+    ingress_nginx_enabled: true
     ingress_nginx_host_network: true
     ingress_nginx_namespace: platform
     ingress_nginx_class: nginx
