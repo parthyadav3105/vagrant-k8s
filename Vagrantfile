@@ -7,22 +7,22 @@ require 'yaml'
 # Import configuration from config.yml
 cfg = YAML.load_file("config.yml")['vagrant']
 
-
 Vagrant.configure("2") do |config|
 
   config.vm.box = cfg['vm_box']
-  config.vm.provider "virtualbox"
-  config.vm.synced_folder ".", "/vagrant"
 
+  # configure to use libvirt, https://gist.github.com/PaulNeumann/81f299a7980f0b74cec9c5cc0508172b
+  config.vm.provider "libvirt"
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.driver="kvm"
+    libvirt.cpus = cfg['vm_cpus']
+    libvirt.memory = cfg['vm_memory']
+  end
+
+  config.vm.synced_folder ".", "/vagrant"
   config.vm.define "node1"
   config.vm.hostname = "node1"
   config.vm.network "private_network", ip: cfg['vm_ip_addr']
-
-  config.vm.provider "virtualbox" do |vb|
-    vb.cpus = cfg['vm_cpus']
-    vb.memory = cfg['vm_memory']
-    vb.gui = false
-  end
 
   config.vm.provision "init", type: "shell", privileged: true, run: "once", inline: <<-SHELL
     set -eu -o pipefail

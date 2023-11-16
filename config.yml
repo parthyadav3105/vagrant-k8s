@@ -2,9 +2,9 @@
 vagrant:
   vm_cpus: 4
   vm_memory: 8192
-  vm_ip_addr: '192.168.56.200'
+  vm_ip_addr: '192.168.60.200'
   vm_username: vagrant
-  vm_box: ubuntu/jammy64
+  vm_box: bento/ubuntu-22.04
   kubespray_version: '2.23.1'
   kubespray_dir: /opt/kubespray
 
